@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import http.server, os, hashlib, shutil, traceback
+import http.server, os, hashlib, shutil, traceback, datetime
 class Server(http.server.BaseHTTPRequestHandler):
     def do_POST(self):
         try:
@@ -9,7 +9,7 @@ class Server(http.server.BaseHTTPRequestHandler):
             with open(rname, "a+b" if msg else "rb") as roomf:
                 self.send_response(200, "OK")
                 self.end_headers()
-                if msg: roomf.write(uname + b": " + msg + b"\n")
+                if msg: roomf.write(datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S").encode("ascii") + b" " + uname + b": " + msg + b"\n")
                 roomf.seek(int(rbias.decode("ascii")))
                 shutil.copyfileobj(roomf, self.wfile)
         except Exception:
