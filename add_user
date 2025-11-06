@@ -1,0 +1,5 @@
+#!/usr/bin/env python3
+import os, hashlib, sys, uuid
+passw = uuid.uuid4().hex
+with open(os.path.join("users", sys.argv[1]), "w") as passwf: passwf.write(hashlib.sha256(passw.encode("ascii")).hexdigest())
+print(passw)
