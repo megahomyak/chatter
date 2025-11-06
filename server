@@ -5,8 +5,8 @@ class Server(http.server.BaseHTTPRequestHandler):
         try:
             rbias, uname, passw, rname, msg = [next(self.rfile)[:-1] for _ in range(5)]
             assert os.path.basename(uname) == uname and os.path.basename(rname) == rname
-            with open(os.path.join(b"users", uname), "rb") as passwf: assert passwf.read().strip() == hashlib.sha256(passw).hexdigest().encode("ascii")
-            with open(os.path.join(b"rooms", rname), "a+b" if msg else "rb") as roomf:
+            with open(os.path.join(os.fsencode(os.environ["CHATTER_USERS_DIR"]), uname), "rb") as passwf: assert passwf.read().strip() == hashlib.sha256(passw).hexdigest().encode("ascii")
+            with open(rname, "a+b" if msg else "rb") as roomf:
                 self.send_response(200, "OK")
                 self.end_headers()
                 if msg: roomf.write(uname + b": " + msg + b"\n")
