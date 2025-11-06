@@ -5,4 +5,5 @@ ENV CHATTER_PORT=80
 ENV CHATTER_USERS_DIR=/app/state/users
 COPY ./server /app/server
 WORKDIR /app/state/rooms
+STOPSIGNAL SIGINT
 CMD [ "/app/server" ]
