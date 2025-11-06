@@ -3,14 +3,15 @@ import http.server, os, hashlib, shutil, traceback, datetime
 class Server(http.server.BaseHTTPRequestHandler):
     def do_POST(self):
         try:
-            rbias, uname, passw, rname, msg = [next(self.rfile)[:-1] for _ in range(5)]
+            rbias_bytes, uname, passw, rname, msg = [next(self.rfile)[:-1] for _ in range(5)]
             assert os.path.basename(uname) == uname and os.path.basename(rname) == rname
             with open(os.path.join(os.fsencode(os.environ["CHATTER_USERS_DIR"]), uname), "rb") as passwf: assert passwf.read().strip() == hashlib.sha256(passw).hexdigest().encode("ascii")
+            rbias = int(rbias_bytes.decode("ascii"))
             with open(rname, "a+b" if msg else "rb") as roomf:
                 self.send_response(200, "OK")
                 self.end_headers()
                 if msg: roomf.write(datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S").encode("ascii") + b" " + uname + b": " + msg + b"\n")
-                roomf.seek(int(rbias.decode("ascii")))
+                roomf.seek(rbias)
                 shutil.copyfileobj(roomf, self.wfile)
         except Exception:
             traceback.print_exc()
