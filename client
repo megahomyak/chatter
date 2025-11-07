@@ -1,2 +1,2 @@
-#!/bin/sh
+#!/bin/bash
 curl --http0.9 -s -S -f -d "$(printf '%s\n%s\n%s\n%s\n%s\n.' "$(stat -c '%s' "$CHATTER_ROOMFILE" 2>/dev/null || printf 0)" "$CHATTER_USERNAME" "$CHATTER_PASSWORD" "$CHATTER_ROOMFILE" "$(read -e MSG && printf '%s' "$MSG")")" "$CHATTER_URL" | tee -a "$CHATTER_ROOMFILE"
