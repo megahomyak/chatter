@@ -14,7 +14,5 @@ CHATTER_HOST=0.0.0.0 CHATTER_PORT=6969 CHATTER_USERS_DIR=../users ../server # Th
 ## CLIENT:
 
 ```
-CHATTER_URL=http://some_host:6969 CHATTER_PASSWORD=blahblahblah58372727838 CHATTER_USERNAME=username ./client room_name # Pulling
-
-CHATTER_URL=http://some_host:6969 CHATTER_PASSWORD=blahblahblah58372727838 CHATTER_USERNAME=username ./client room_name 'my new message' # Pushing
+CHATTER_ROOMNAME=general CHATTER_URL=http(s)://some_host:6969 CHATTER_PASSWORD=blahblahblah58372727838 CHATTER_USERNAME=username ./client
 ```
