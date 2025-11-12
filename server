@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
-import wsgiref.simple_server, os, hashlib, shutil, traceback, datetime
-def app(env, begin):
-    rbias_bytes, uname, passw, rname, msg = [env["wsgi.input"].readline()[:-1] for _ in range(5)]
-    assert os.path.basename(uname) == uname and os.path.basename(rname) == rname
-    with open(os.path.join(os.fsencode(os.environ["CHATTER_USERS_DIR"]), uname), "rb") as passwf: assert passwf.read().strip() == hashlib.sha256(passw).hexdigest().encode("ascii")
+import wsgiref.simple_server, os, hashlib, datetime
+def application(environ, start_response):
+    rbias_bytes, uname, passw, rname, msg = [environ["wsgi.input"].readline()[:-1] for _ in range(5)]
     rbias = int(rbias_bytes.decode("ascii"))
+    with open(os.path.join(os.fsencode(os.environ["CHATTER_USERS_DIR"]), uname), "rb") as passwf: assert passwf.read().strip() == hashlib.sha256(passw).hexdigest().encode("ascii") and os.path.basename(uname) == uname and os.path.basename(rname) == rname
     roomf = open(rname, "a+b" if msg else "rb")
-    begin("200 OK", [])
+    start_response("200 OK", [])
     if msg: roomf.write(datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S").encode("ascii") + b" " + uname + b": " + msg + b"\n")
     roomf.seek(rbias)
     return roomf
-wsgiref.simple_server.make_server(os.environ["CHATTER_HOST"], int(os.environ["CHATTER_PORT"]), app).serve_forever()
+if __name__ == "__main__": wsgiref.simple_server.make_server(os.environ["CHATTER_HOST"], int(os.environ["CHATTER_PORT"]), application).serve_forever()
