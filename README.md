@@ -16,3 +16,19 @@ CHATTER_HOST=0.0.0.0 CHATTER_PORT=6969 CHATTER_USERS_DIR=../users ../server # Th
 ```
 CHATTER_ROOMNAME=general CHATTER_URL=http(s)://some_host:6969 CHATTER_PASSWORD=blahblahblah58372727838 CHATTER_USERNAME=username ./client
 ```
+
+## My thoughts on the protocol
+
+Essentially, w/o any annoying implementation limitations, the protocol should just be this:
+
+### Client
+
+* Collect the necessary data (roombias (the size of the roomfile, =0 if roomfile wasn't found), username, password, roomname, message)
+* Send the request with the above variables on separate lines, in order
+* Write the response to the roomfile
+
+### Server
+
+* Collect and validate the incoming data (validation: `is_unsigned_int(roombias) && basename(username) == username && basename(roomname) == roomname && sha256(read(CHATTER_USERS_DIR/username)) == password && (message != "" || exists(roomname))`; server response status = validity check status)
+* Write to the roomfile if a message is present
+* Send from the roomfile from the offset
