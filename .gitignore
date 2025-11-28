@@ -6,3 +6,7 @@
 !.gitignore
 !README.md
 !Dockerfile
+!utilities
+!utilities/telegram_notifier
+!utilities/telegram_notifier/Dockerfile
+!utilities/telegram_notifier/telegram_notifier.sh
