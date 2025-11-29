@@ -1,6 +1,5 @@
 FROM busybox:1.36.1-uclibc
-WORKDIR /app
-ENTRYPOINT ["sh", "../telegram_notifier.sh"]
-COPY telegram_notifier.sh .
 WORKDIR /app/state
+COPY telegram_notifier.sh /app/telegram_notifier.sh
 STOPSIGNAL SIGKILL
+CMD ["sh", "/app/telegram_notifier.sh"]
