@@ -2,8 +2,8 @@
 import wsgiref.simple_server, os, hashlib, datetime
 def application(environ, start_response):
     rbias_bytes, uname, passw, rname, msg = [environ["wsgi.input"].readline()[:-1] for _ in range(5)]
-    with open(os.path.join(os.fsencode(os.environ["CHATTER_USERS_DIR"]), uname), "rb") as passwf: assert os.path.basename(uname) == uname and os.path.basename(rname) == rname and passwf.read().strip() == hashlib.sha256(passw).hexdigest().encode("ascii")
-    roomf = open(rname, "a+b" if msg else "rb")
+    with open(os.path.join(os.fsencode(os.environ["CHATTER_USERS_DIR"]), uname), "rb") as passwf: assert os.path.basename(uname) == uname and os.path.basename(rname) == rname and passwf.read().strip() == hashlib.sha256(passw).hexdigest().encode("ascii") and int(rbias_bytes.decode("ascii")) >= 0 and (msg or os.path.exists(rname))
+    roomf = open(rname, "a+b")
     if msg: roomf.write(datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S").encode("ascii") + b" " + uname + b": " + msg + b"\n")
     roomf.seek(int(rbias_bytes.decode("ascii")))
     start_response("200 OK", [])
